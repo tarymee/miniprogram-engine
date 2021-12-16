@@ -1,0 +1,116 @@
+<template>
+  <view class="sm-inputwrap" wx:class="{{ ['sm-inputwrap-' + sence, (errmsg !== '' ? 'sm-inputwrap-error' : '')] }}" wx:style="{{ viewStyle }}">
+    <view class="sm-inputwrap-label" bindtap="test">
+      {{ title }}
+      <text class="sm-inputwrap-label-required" wx:if="{{ required }}">*</text>
+    </view>
+    <view class="sm-inputwrap-con">
+      <slot></slot>
+      <view class="sm-inputwrap-errmsg">{{ errmsg }}</view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import { createComponent } from '@mpxjs/core'
+  // import get from 'lodash-es/get'
+  // import cloneDeep from 'lodash-es/cloneDeep'
+  // import baseMixin from './baseMixin'
+
+  createComponent({
+    properties: {
+      viewStyle: {
+        type: Object,
+        value: {}
+      },
+      readonly: {
+        type: Boolean,
+        value: false
+      },
+      title: {
+        type: String,
+        value: ''
+      },
+      required: {
+        type: Boolean,
+        value: false
+      },
+      sence: {
+        type: String,
+        value: ''
+      },
+      errmsg: {
+        type: String,
+        value: ''
+      }
+    },
+    methods: {
+      test (e) {
+        console.log(e)
+        console.log(this)
+        console.log(this.sence)
+      }
+    }
+  })
+</script>
+
+<style>
+.sm-inputwrap {
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+  background-color: #FFF;
+}
+.sm-inputwrap-label {
+  flex: none;
+  line-height: 20px;
+  padding: 10px 8px 10px 0;
+  box-sizing: border-box;
+  font-size: 14px;
+  color: #333;
+}
+.sm-inputwrap-label-required {
+  color: #FF5028;
+  margin-left: 4px;
+}
+.sm-inputwrap-con {
+  position: relative;
+  flex: 1;
+}
+.sm-inputwrap-errmsg {
+  color: #FF5028;
+  font-size: 12px;
+  line-height: 24px;
+}
+
+.sm-inputwrap-horizontal {
+  flex-direction: row;
+  border-bottom: 1px solid #EEEEEE;
+}
+.sm-inputwrap-horizontal .sm-inputwrap-label {
+  width : 30%;
+}
+.sm-inputwrap-horizontal .sm-inputwrap-errmsg {
+  text-align: right;
+}
+.sm-inputwrap-vertical, .sm-inputwrap-infilter {
+  flex-direction: column;
+  border-bottom: none;
+}
+.sm-inputwrap-vertical .sm-inputwrap-label {
+  width : 100%;
+}
+.sm-inputwrap-infilter .sm-inputwrap-label {
+  display: none;
+}
+.sm-inputwrap-vertical .sm-inputwrap-errmsg, 
+.sm-inputwrap-infilter .sm-inputwrap-errmsg {
+  text-align: left;
+}
+</style>
+
+<script type="application/json">
+  {
+    "component": true
+  }
+</script>

@@ -1,0 +1,133 @@
+<template>
+  <view class="xt-input xt-dropdownbox">
+    <!-- <view class="xt-input-label">
+      <text class="xt-input-label-required" wx:if="{{ required }}">*</text>
+      {{ title }}
+    </view> -->
+    <view class="xt-input-con">
+      <view class="xt-dropdownbox-con">
+        <!-- <van-icon class="xt-dropdownbox-icon" name="{{ (index >= 0 && !readonly) ? 'cross' : 'arrow-down' }}" bindtap="deal" size="18px" /> -->
+        <!-- <van-icon class="xt-dropdownbox-icon" wx:if="{{ !(index >= 0 && !readonly) }}" name="arrow-down" bindtap="deal" size="18px" /> -->
+        <picker class="xt-dropdownbox-picker" bindchange="bindPickerChange" value="{{ index }}" range="{{ options }}" range-key="text" disabled="{{ readonly }}">
+          <view class="xt-dropdownbox-text" wx:if="{{ index >= 0 }}">
+            {{ options[index].text }}
+          </view>
+          <view class="xt-dropdownbox-placeholder" wx:else>{{ placeholder }}</view>
+        </picker>
+        <!-- <van-icon class="xt-dropdownbox-icon" wx:if="{{ index >= 0 && !readonly }}" name="cross" bindtap="deal" size="18px" /> -->
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import { createComponent } from '@mpxjs/core'
+  import get from 'lodash-es/get'
+  import cloneDeep from 'lodash-es/cloneDeep'
+  import xtBaseMixin from '../common/baseMixin'
+
+  createComponent({
+    mixins: [
+      xtBaseMixin
+    ],
+    data: {
+      index: -1,
+      options: [],
+      fullvalue: ''
+    },
+    watch: {
+      index (newValue, oldValue) {
+        console.log('watch index')
+        console.log(newValue, oldValue)
+        if (newValue >= 0) {
+          this.value = this.options[newValue].key
+          this.fullvalue = cloneDeep(this.options[newValue])
+        } else {
+          this.value = ''
+          this.fullvalue = ''
+        }
+      }
+    },
+    created () {
+      console.log('xt-dropdownbox created')
+      console.log(this.title)
+      this.options = get(this.viewRule, 'options', [])
+    },
+    methods: {
+      getValue (type = 'value') {
+        if (type === 'fullvalue') {
+          return this.fullvalue
+        } else if (type === 'value') {
+          return this.value
+        }
+      },
+      setValue (data) {
+        const index = this.options.findIndex((item) => {
+          return item.key === data
+        })
+        console.log(index)
+        this.index = index
+      },
+      bindPickerChange (e) {
+        console.log(e)
+        const value = Number(e.detail.value)
+        if (value !== this.index) {
+          this.index = value
+          this.triggerEvent('onvaluechange', this.getValue())
+        }
+      },
+      deal (e) {
+        console.log(e)
+        if (this.readonly) return false
+        if (this.index >= 0) {
+          // this.index = -1
+          this.setValue('')
+          this.triggerEvent('onvaluechange', this.getValue())
+        }
+      }
+    }
+  })
+</script>
+
+<style>
+  /* @import '../common/baseInput.styl'
+  .xt-dropdownbox-con
+    position relative
+    flex 1
+    height 38px
+  .xt-dropdownbox-picker
+    flex 1
+    width 100%
+    height 38px
+    position absolute
+    left 0px
+    top 0px
+  .xt-dropdownbox-text
+    white-space nowrap
+    word-wrap normal
+    text-overflow ellipsis
+    overflow hidden
+    margin-right 24px
+    flex 1
+    line-height 38px
+  .xt-dropdownbox-placeholder
+    flex 1
+    color #777
+    margin-right 24px
+    line-height 38px
+  .xt-dropdownbox-icon
+    color #999
+    position absolute
+    right 0px
+    top 10px */
+
+</style>
+
+<script type="application/json">
+  {
+    "component": true,
+    "usingComponents": {
+      // "van-icon": "@vant/weapp/icon/index"
+    }
+  }
+</script>

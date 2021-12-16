@@ -1,0 +1,49 @@
+<template>
+  <view class="sm-layout" wx:style="{{ viewStyle }}" wx:class="{{ ['sm-layout-' + sence] }}">
+    <!-- {{ title }} -->
+    <view wx:for="{{ content }}" wx:key="index">
+      <component is="{{ item.type }}" viewRule="{{ item }}"></component>
+    </view>
+  </view>
+</template>
+
+<script>
+  import { createComponent } from '@mpxjs/core'
+  import get from 'lodash-es/get'
+  import cloneDeep from 'lodash-es/cloneDeep'
+  import baseMixin from '../common/baseMixin'
+
+  createComponent({
+    mixins: [
+      baseMixin
+    ],
+    data () {
+      return {
+        content: []
+      }
+    },
+    created () {
+      this.content = get(this.viewRule, 'content', [])
+    },
+    methods: {
+
+    }
+  })
+</script>
+
+<style>
+  .sm-layout {
+
+  }
+</style>
+
+<script type="application/json">
+  {
+    "component": true,
+    "usingComponents": {
+      "address": "../address",
+      "textinput": "../textinput",
+      "layout": "./index"
+    }
+  }
+</script>

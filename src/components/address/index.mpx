@@ -1,0 +1,176 @@
+<template>
+  <base-input-wrap readonly="{{ readonly }}" title="{{ title }}" required="{{ required }}" sence="{{ sence }}" errmsg="{{ errmsg }}" viewStyle="{{ viewStyle }}">
+    <view wx:class="{{ ['sm-' + type, 'sm-' + type + '-' + sence, (errmsg !== '' ? ('sm-' + type + '-error') : '')] }}">
+      <view class="sm-address-text" wx:class="{{ { 'sm-address-place': !(valueObj && valueObj.address), 'sm-address-readonly': readonly } }}" bindtap="chooseLocation">
+        {{ valueObj ? valueObj.address : (readonly ? '' : placeholder) }}
+      </view>
+      <van-icon class="sm-address-icon" name="{{ iconName }}" bindtap="deal" size="18px" />
+    </view>
+  </base-input-wrap>
+</template>
+
+<script>
+  import { createComponent } from '@mpxjs/core'
+  import get from 'lodash-es/get'
+  import aMap from '../../service/aMap'
+  import cloneDeep from 'lodash-es/cloneDeep'
+  import baseInputMixin from '../common/baseInputMixin'
+
+  createComponent({
+    mixins: [
+      baseInputMixin
+    ],
+    data () {
+      return {
+        valueObj: null
+      }
+    },
+    computed: {
+      iconName () {
+        if (this.readonly) {
+          return 'location-o'
+        } else {
+          return this.value ? 'cross' : 'location-o'
+        }
+      }
+    },
+    created () {
+      const value = get(this.viewRule, 'value', '')
+      if (value) {
+        // console.log(value)
+        this.setValue(value)
+      }
+      if (this.viewRule.auto === '1' && !value) {
+        aMap.getRegeo({
+          success: data => {
+            // console.log(data)
+            const latitude = get(data, '[0].latitude') + ''
+            const longitude = get(data, '[0].longitude') + ''
+            const address = get(data, '[0].regeocodeData.formatted_address') || get(data, '[0].name')
+            this.setValue(JSON.stringify({
+              address,
+              latitude,
+              longitude
+            }))
+          },
+          fail: error => {
+            console.error(error)
+            // wx.removeStorageSync('userLocation')
+            if (error.errMsg !== 'getLocation:fail 频繁调用会增加电量损耗，可考虑使用 wx.onLocationChange 监听地理位置变化') {
+              wx.showModal({
+                title: '提示',
+                content: '无法获取定位信息，请打开手机的定位服务并允许微信使用后重新定位。',
+                showCancel: false,
+                success: (e) => {}
+              })
+            }
+          }
+        })
+      }
+    },
+    methods: {
+      // getValue () {
+      //   return this.value ? JSON.stringify(this.value) : ''
+      // },
+      setValue (data) {
+        if (data) {
+          this.valueObj = JSON.parse(data)
+          this.value = data
+        } else {
+          this.valueObj = null
+          this.value = ''
+        }
+      },
+      deal () {
+        if (this.readonly) return false
+        if (this.valueObj) {
+          this.setValue('')
+          this.executeEvent('onvaluechange')
+        } else {
+          this.chooseLocation()
+        }
+      },
+      chooseLocation () {
+        if (this.readonly) return false
+        let latitude = Number(get(this.valueObj, 'latitude', ''))
+        let longitude = Number(get(this.valueObj, 'longitude', ''))
+        let obj = {}
+        if (latitude) {
+          obj.latitude = latitude
+        }
+        if (longitude) {
+          obj.longitude = longitude
+        }
+        wx.chooseLocation({
+          ...obj,
+          success: res => {
+            console.log(res)
+            this.setValue(JSON.stringify({
+              address: `${res.address}(${res.name})`,
+              latitude: res.latitude + '',
+              longitude: res.longitude + ''
+            }))
+            this.executeEvent('onvaluechange')
+          }
+        })
+      }
+    }
+  })
+</script>
+
+<style>
+  .sm-address {
+    width: 100%;
+    /* height: 40px; */
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  .sm-address-text {
+    flex: 1;
+    width: 100%;
+    font-size: 14px;
+    line-height: 20px;
+    min-height: 40px;
+    padding: 10px 40px 10px 0;
+    box-sizing: border-box;
+    color: #333;
+  }
+  .sm-address-icon {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    color: #999;
+    top: 50%;
+    margin-top: -20px;
+    right: 0px;
+  }
+  .sm-address-place {
+    color: #ccc;
+  }.sm-address-readonly {
+    color: #999;
+  }
+  .sm-address-horizontal .sm-address-text {
+    text-align: right;
+  }
+  .sm-address-vertical .sm-address-text, .sm-address-infilter .sm-address-text {
+    padding: 10px 40px 10px 8px;
+    text-align: left;
+    border: 1px solid #EEE;
+    border-radius: 3px;
+  }
+  .sm-address-vertical.sm-address-error .sm-address-text, .sm-address-infilter.sm-address-error .sm-address-text {
+    border: 1px solid #FF5028;
+  }
+</style>
+
+<script type="application/json">
+  {
+    "component": true,
+    "usingComponents": {
+      "van-icon": "@vant/weapp/icon/index",
+      "base-input-wrap": "../common/baseInputWrap"
+    }
+  }
+</script>

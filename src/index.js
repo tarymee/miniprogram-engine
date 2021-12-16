@@ -5,7 +5,7 @@ Component({
     prop: {
       type: String,
       value: 'index.properties'
-    },
+    }
   },
   data: {
     flag: false,
