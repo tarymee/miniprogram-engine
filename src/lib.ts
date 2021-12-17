@@ -1,5 +1,5 @@
 export default {
-  printf() {
+  printf () {
     return 'miniprogram-custom-component api demo'
   }
 }

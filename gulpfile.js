@@ -10,9 +10,9 @@ const id = require('./package.json').name || 'miniprogram-custom-component'
 new BuildTask(id, config.entry)
 
 // 清空生成目录和文件
-gulp.task('clean', gulp.series(() => gulp.src(config.distPath, {read: false, allowEmpty: true}).pipe(clean()), done => {
+gulp.task('clean', gulp.series(() => gulp.src(config.distPath, { read: false, allowEmpty: true }).pipe(clean()), done => {
   if (config.isDev) {
-    return gulp.src(config.demoDist, {read: false, allowEmpty: true})
+    return gulp.src(config.demoDist, { read: false, allowEmpty: true })
       .pipe(clean())
   }
 

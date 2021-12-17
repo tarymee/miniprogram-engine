@@ -24,66 +24,78 @@ module.exports = {
 
   wxss: {
     less: false, // 使用 less 来编写 wxss
-    sourcemap: false, // 生成 less sourcemap
+    sourcemap: false // 生成 less sourcemap
   },
 
   js: {
-    webpack: true, // 使用 webpack 来构建 js
+    webpack: true // 使用 webpack 来构建 js
   },
 
   webpack: {
     mode: 'production',
     output: {
       filename: '[name].js',
-      libraryTarget: 'commonjs2',
+      libraryTarget: 'commonjs2'
     },
     target: 'node',
     externals: [nodeExternals()], // 忽略 node_modules
     module: {
-      rules: [{
-        test: /\.js$/i,
-        use: [{
-          loader: 'thread-loader',
-        }, {
-          loader: 'babel-loader',
-          options: {
-            cacheDirectory: true,
-          },
-        }, {
-          loader: 'eslint-loader',
-        }],
-        exclude: /node_modules/
-      }, {
-        test: /\.ts$/,
-        exclude: /node_modules/,
-        use: [{
-          loader: 'thread-loader',
-        }, {
-          loader: 'babel-loader',
-          options: {
-            cacheDirectory: true,
-          },
-        }, {
-          loader: 'ts-loader',
-          options: {
-            appendTsSuffixTo: [/\.vue$/],
-            happyPackMode: true,
-          },
-        }, {
-          loader: 'eslint-loader',
-        }],
-      }],
+      rules: [
+        {
+          test: /\.js$/i,
+          exclude: /node_modules/,
+          use: [
+            {
+              loader: 'thread-loader'
+            },
+            {
+              loader: 'babel-loader',
+              options: {
+                cacheDirectory: true
+              }
+            },
+            {
+              loader: 'eslint-loader'
+            }
+          ]
+        },
+        {
+          test: /\.ts$/,
+          exclude: /node_modules/,
+          use: [
+            {
+              loader: 'thread-loader'
+            },
+            {
+              loader: 'babel-loader',
+              options: {
+                cacheDirectory: true
+              }
+            },
+            {
+              loader: 'ts-loader',
+              options: {
+                appendTsSuffixTo: [/\.vue$/],
+                happyPackMode: true
+              }
+            },
+            {
+              loader: 'eslint-loader'
+            }
+          ]
+        }
+      ]
     },
     resolve: {
       modules: [src, 'node_modules'],
-      extensions: ['.js', '.json'],
+      extensions: ['.js', '.json']
     },
     plugins: [
       new webpack.DefinePlugin({}),
-      new webpack.optimize.LimitChunkCountPlugin({maxChunks: 1}),
+      new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 })
     ],
     optimization: {
-      minimize: false,
+      minimize: false
     },
     devtool: 'source-map', // 生成 js sourcemap
     performance: {
@@ -92,5 +104,5 @@ module.exports = {
     }
   },
 
-  copy: ['./assets', './utils.js'], // 将会复制到目标目录
+  copy: ['./assets', './utils.js'] // 将会复制到目标目录
 }

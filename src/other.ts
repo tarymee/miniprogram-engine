@@ -3,9 +3,9 @@ Component({
     prop: {
       type: String,
       value: 'other.properties'
-    },
+    }
   },
   data: {
-    name: 'other',
-  },
+    name: 'other'
+  }
 })

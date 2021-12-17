@@ -23,15 +23,15 @@ const distPath = config.distPath
 /**
  * 获取 wxss 流
  */
-function wxss(wxssFileList) {
+function wxss (wxssFileList) {
   if (!wxssFileList.length) return false
 
-  return gulp.src(wxssFileList, {cwd: srcPath, base: srcPath})
+  return gulp.src(wxssFileList, { cwd: srcPath, base: srcPath })
     .pipe(checkWxss.start()) // 开始处理 import
     .pipe(gulpif(wxssConfig.less && wxssConfig.sourcemap, sourcemaps.init()))
-    .pipe(gulpif(wxssConfig.less, less({paths: [srcPath]})))
+    .pipe(gulpif(wxssConfig.less, less({ paths: [srcPath] })))
     .pipe(checkWxss.end()) // 结束处理 import
-    .pipe(rename({extname: '.wxss'}))
+    .pipe(rename({ extname: '.wxss' }))
     .pipe(gulpif(wxssConfig.less && wxssConfig.sourcemap, sourcemaps.write('./')))
     .pipe(_.logger(wxssConfig.less ? 'generate' : undefined))
     .pipe(gulp.dest(distPath))
@@ -40,7 +40,7 @@ function wxss(wxssFileList) {
 /**
  * 获取 js 流
  */
-function js(jsFileMap, scope) {
+function js (jsFileMap, scope) {
   const webpackConfig = config.webpack
   const webpackCallback = (err, stats) => {
     if (!err) {
@@ -54,7 +54,7 @@ function js(jsFileMap, scope) {
         warnings: true,
         version: true,
         modules: false,
-        publicPath: true,
+        publicPath: true
       }))
     } else {
       // eslint-disable-next-line no-console
@@ -72,7 +72,7 @@ function js(jsFileMap, scope) {
 
   if (config.isWatch) {
     scope.webpackWatcher = webpack(webpackConfig).watch({
-      ignored: /node_modules/,
+      ignored: /node_modules/
     }, webpackCallback)
   } else {
     webpack(webpackConfig).run(webpackCallback)
@@ -82,10 +82,10 @@ function js(jsFileMap, scope) {
 /**
  * 拷贝文件
  */
-function copy(copyFileList) {
+function copy (copyFileList) {
   if (!copyFileList.length) return false
 
-  return gulp.src(copyFileList, {cwd: srcPath, base: srcPath})
+  return gulp.src(copyFileList, { cwd: srcPath, base: srcPath })
     .pipe(_.logger())
     .pipe(gulp.dest(distPath))
 }
@@ -93,25 +93,25 @@ function copy(copyFileList) {
 /**
  * 安装依赖包
  */
-function install() {
+function install () {
   return gulp.series(async () => {
     const demoDist = config.demoDist
     const demoPackageJsonPath = path.join(demoDist, 'package.json')
     const packageJson = _.readJson(path.resolve(__dirname, '../package.json'))
     const dependencies = packageJson.dependencies || {}
 
-    await _.writeFile(demoPackageJsonPath, JSON.stringify({dependencies}, null, '\t')) // write dev demo's package.json
+    await _.writeFile(demoPackageJsonPath, JSON.stringify({ dependencies }, null, '\t')) // write dev demo's package.json
   }, () => {
     const demoDist = config.demoDist
     const demoPackageJsonPath = path.join(demoDist, 'package.json')
 
     return gulp.src(demoPackageJsonPath)
-      .pipe(gulpInstall({production: true}))
+      .pipe(gulpInstall({ production: true }))
   })
 }
 
 class BuildTask {
-  constructor(id, entry) {
+  constructor (id, entry) {
     if (!entry) return
 
     this.id = id
@@ -123,13 +123,13 @@ class BuildTask {
     this.init()
   }
 
-  init() {
+  init () {
     const id = this.id
 
     /**
      * 清空目标目录
      */
-    gulp.task(`${id}-clean-dist`, () => gulp.src(distPath, {read: false, allowEmpty: true}).pipe(clean()))
+    gulp.task(`${id}-clean-dist`, () => gulp.src(distPath, { read: false, allowEmpty: true }).pipe(clean()))
 
     /**
      * 拷贝 demo 到目标目录
@@ -144,7 +144,7 @@ class BuildTask {
         const demoSrc = config.demoSrc
         const demoDist = config.demoDist
 
-        return gulp.src('**/*', {cwd: demoSrc, base: demoSrc})
+        return gulp.src('**/*', { cwd: demoSrc, base: demoSrc })
           .pipe(gulp.dest(demoDist))
       }
 
@@ -284,7 +284,7 @@ class BuildTask {
      */
     gulp.task(`${id}-watch-js`, done => {
       if (!jsConfig.webpack) {
-        return gulp.watch(this.componentListMap.jsFileList, {cwd: srcPath, base: srcPath}, gulp.series(`${id}-component-js`))
+        return gulp.watch(this.componentListMap.jsFileList, { cwd: srcPath, base: srcPath }, gulp.series(`${id}-component-js`))
       }
 
       return done()
@@ -293,14 +293,14 @@ class BuildTask {
     /**
      * 监听 json 变化
      */
-    gulp.task(`${id}-watch-json`, () => gulp.watch(this.componentListMap.jsonFileList, {cwd: srcPath, base: srcPath}, gulp.series(`${id}-component-check`, gulp.parallel(`${id}-component-wxml`, `${id}-component-wxss`, `${id}-component-js`, `${id}-component-json`))))
+    gulp.task(`${id}-watch-json`, () => gulp.watch(this.componentListMap.jsonFileList, { cwd: srcPath, base: srcPath }, gulp.series(`${id}-component-check`, gulp.parallel(`${id}-component-wxml`, `${id}-component-wxss`, `${id}-component-js`, `${id}-component-json`))))
 
     /**
      * 监听 wxml 变化
      */
     gulp.task(`${id}-watch-wxml`, () => {
       this.cachedComponentListMap.wxmlFileList = null
-      return gulp.watch(this.componentListMap.wxmlFileList, {cwd: srcPath, base: srcPath}, gulp.series(`${id}-component-wxml`))
+      return gulp.watch(this.componentListMap.wxmlFileList, { cwd: srcPath, base: srcPath }, gulp.series(`${id}-component-wxml`))
     })
 
     /**
@@ -308,7 +308,7 @@ class BuildTask {
      */
     gulp.task(`${id}-watch-wxss`, () => {
       this.cachedComponentListMap.wxssFileList = null
-      return gulp.watch('**/*.wxss', {cwd: srcPath, base: srcPath}, gulp.series(`${id}-component-wxss`))
+      return gulp.watch('**/*.wxss', { cwd: srcPath, base: srcPath }, gulp.series(`${id}-component-wxss`))
     })
 
     /**
@@ -331,7 +331,7 @@ class BuildTask {
       }).filter(copyFilePath => !!copyFilePath)
       const watchCallback = filePath => copy([filePath])
 
-      return gulp.watch(copyFileList, {cwd: srcPath, base: srcPath})
+      return gulp.watch(copyFileList, { cwd: srcPath, base: srcPath })
         .on('change', watchCallback)
         .on('add', watchCallback)
         .on('unlink', watchCallback)
@@ -343,10 +343,10 @@ class BuildTask {
     gulp.task(`${id}-watch-demo`, () => {
       const demoSrc = config.demoSrc
       const demoDist = config.demoDist
-      const watchCallback = filePath => gulp.src(filePath, {cwd: demoSrc, base: demoSrc})
+      const watchCallback = filePath => gulp.src(filePath, { cwd: demoSrc, base: demoSrc })
         .pipe(gulp.dest(demoDist))
 
-      return gulp.watch('**/*', {cwd: demoSrc, base: demoSrc})
+      return gulp.watch('**/*', { cwd: demoSrc, base: demoSrc })
         .on('change', watchCallback)
         .on('add', watchCallback)
         .on('unlink', watchCallback)

@@ -1,0 +1,5 @@
+src/lib/*.js
+src/lib/**/*.js
+miniprogram-engine/src/lib/*.js
+miniprogram-engine/src/lib/**/*.js
+dist/**/*.js

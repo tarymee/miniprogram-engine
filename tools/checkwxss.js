@@ -7,7 +7,7 @@ const _ = require('./utils')
 /**
  * 获取 import 列表
  */
-function getImportList(wxss, filePath) {
+function getImportList (wxss, filePath) {
   const reg = /@import\s+(?:(?:"([^"]+)")|(?:'([^']+)'));/ig
   const importList = []
   let execRes = reg.exec(wxss)
@@ -26,7 +26,7 @@ function getImportList(wxss, filePath) {
 /**
  * 获取 wxss 内容
  */
-async function getContent(wxss, filePath, cwd) {
+async function getContent (wxss, filePath, cwd) {
   let importList = []
 
   if (wxss) {
@@ -57,11 +57,11 @@ async function getContent(wxss, filePath, cwd) {
 }
 
 module.exports = {
-  start() {
+  start () {
     return through.obj(function (file, enc, cb) {
       if (file.isBuffer()) {
         getContent(file.contents.toString('utf8'), file.path, file.cwd).then(res => {
-          const {wxss, importList} = res
+          const { wxss, importList } = res
 
           importList.forEach(importFile => this.push(importFile))
 
@@ -83,7 +83,7 @@ module.exports = {
     })
   },
 
-  end() {
+  end () {
     return through.obj(function (file, enc, cb) {
       if (file.isBuffer) {
         const reg = /\/\*\s\*updated for miniprogram-custom-component\*\s(@import\s+(?:(?:"([^"]+)")|(?:'([^"]+)'));)\s\*\//ig

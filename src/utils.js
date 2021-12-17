@@ -1,5 +1,5 @@
 module.exports = {
-  getFlag() {
+  getFlag () {
     return true
-  },
+  }
 }

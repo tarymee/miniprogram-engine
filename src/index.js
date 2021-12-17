@@ -8,14 +8,14 @@ Component({
     }
   },
   data: {
-    flag: false,
+    flag: false
   },
   lifetimes: {
-    attached() {
+    attached () {
       wx.getSystemInfo({
         success: () => {
           this.setData({
-            flag: _.getFlag(),
+            flag: _.getFlag()
           })
         }
       })

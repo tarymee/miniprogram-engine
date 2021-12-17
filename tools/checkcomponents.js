@@ -9,7 +9,7 @@ let hasCheckCompoenntMap = {}
 /**
  * 获取 json 路径相关信息
  */
-function getJsonPathInfo(jsonPath) {
+function getJsonPathInfo (jsonPath) {
   const dirPath = path.dirname(jsonPath)
   const fileName = path.basename(jsonPath, '.json')
   const relative = path.relative(srcPath, dirPath)
@@ -24,11 +24,11 @@ function getJsonPathInfo(jsonPath) {
  * 检测是否包含其他自定义组件
  */
 const checkProps = ['usingComponents', 'componentGenerics']
-async function checkIncludedComponents(jsonPath, componentListMap) {
+async function checkIncludedComponents (jsonPath, componentListMap) {
   const json = _.readJson(jsonPath)
   if (!json) throw new Error(`json is not valid: "${jsonPath}"`)
 
-  const {dirPath, fileName, fileBase} = getJsonPathInfo(jsonPath)
+  const { dirPath, fileName, fileBase } = getJsonPathInfo(jsonPath)
   if (hasCheckCompoenntMap[fileBase]) return
   hasCheckCompoenntMap[fileBase] = true
 
@@ -76,12 +76,12 @@ module.exports = async function (entry) {
     jsonFileList: [],
     jsFileList: [],
 
-    jsFileMap: {}, // 为 webpack entry 所用
+    jsFileMap: {} // 为 webpack entry 所用
   }
 
   const isExists = await _.checkFileExists(entry)
   if (!isExists) {
-    const {dirPath, fileName, fileBase} = getJsonPathInfo(entry)
+    const { dirPath, fileName, fileBase } = getJsonPathInfo(entry)
 
     const wholeFileBase = path.join(dirPath, fileName)
     let jsExt = '.js'
