@@ -15,7 +15,7 @@ function getImportList (wxss, filePath) {
   while (execRes && (execRes[1] || execRes[2])) {
     importList.push({
       code: execRes[0],
-      path: path.join(path.dirname(filePath), execRes[1] || execRes[2]),
+      path: path.join(path.dirname(filePath), execRes[1] || execRes[2])
     })
     execRes = reg.exec(wxss)
   }
@@ -44,7 +44,7 @@ async function getContent (wxss, filePath, cwd) {
       importList.push(new Vinyl({
         cwd,
         path: item.path,
-        contents: Buffer.from(importInfo.wxss, 'utf8'),
+        contents: Buffer.from(importInfo.wxss, 'utf8')
       }))
       importList = importList.concat(importInfo.importList)
     }
@@ -52,7 +52,7 @@ async function getContent (wxss, filePath, cwd) {
 
   return {
     wxss,
-    importList,
+    importList
   }
 }
 
@@ -97,5 +97,5 @@ module.exports = {
         cb()
       }
     })
-  },
+  }
 }

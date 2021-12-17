@@ -1,7 +1,6 @@
 module.exports = {
   'extends': [
-    'eslint:recommended',
-    'plugin:promise/recommended'
+    'eslint:recommended'
   ],
   'parser': '@typescript-eslint/parser',
   'plugins': ['@typescript-eslint'],
@@ -19,8 +18,7 @@ module.exports = {
   },
   'plugins': [
     'import',
-    'node',
-    'promise'
+    'node'
   ],
   'rules': {
     'comma-dangle': [

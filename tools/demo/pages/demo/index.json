@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "sm-textinput": "../../components/components/textinput"
+  }
+}
